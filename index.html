@@ -1,0 +1,2097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps in Cloud - Unit 1 | B.Tech Semester 7</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ========================================
+           CSS VARIABLES & RESET
+           ======================================== */
+        :root {
+            --primary-blue: #2563eb;
+            --secondary-blue: #3b82f6;
+            --light-blue: #60a5fa;
+            --dark-blue: #1e40af;
+            --white: #ffffff;
+            --off-white: #f8fafc;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --gradient-blue: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #60a5fa 100%);
+            --gradient-dark: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        /* Dark Mode Variables */
+        [data-theme="dark"] {
+            --white: #1e293b;
+            --off-white: #0f172a;
+            --text-dark: #f1f5f9;
+            --text-light: #cbd5e1;
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--off-white);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: var(--transition);
+        }
+
+        /* ========================================
+           NAVIGATION
+           ======================================== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .navbar.scrolled {
+            background: var(--white);
+            box-shadow: var(--shadow);
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-blue);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-blue);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .theme-toggle {
+            background: var(--gradient-blue);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        /* ========================================
+           HERO SECTION
+           ======================================== */
+        .hero {
+            min-height: 100vh;
+            background: var(--gradient-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            color: white;
+            max-width: 900px;
+        }
+
+        .hero-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero h2 {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease 0.2s backwards;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.4s backwards;
+        }
+
+        .hero-faculty {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.6s backwards;
+        }
+
+        .cta-btn {
+            background: white;
+            color: var(--primary-blue);
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            animation: fadeInUp 1s ease 0.8s backwards;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========================================
+           SECTION STYLES
+           ======================================== */
+        section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--gradient-blue);
+            border-radius: 2px;
+        }
+
+        /* ========================================
+           GLASSMORPHISM CARDS
+           ======================================== */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        /* ========================================
+           COURSE OBJECTIVES
+           ======================================== */
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .objective-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .objective-icon {
+            background: var(--gradient-blue);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        /* ========================================
+           SOFTWARE DEVELOPMENT SECTION
+           ======================================== */
+        .dev-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .dev-illustration {
+            text-align: center;
+        }
+
+        .dev-illustration i {
+            font-size: 8rem;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .real-life-example {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-top: 1.5rem;
+            border-left: 5px solid #f59e0b;
+        }
+
+        .real-life-example h4 {
+            color: #92400e;
+            margin-bottom: 0.5rem;
+        }
+
+        .real-life-example p {
+            color: #78350f;
+        }
+
+        /* ========================================
+           PROBLEMS SECTION
+           ======================================== */
+        .problems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .problem-card {
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .problem-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ef4444, #f97316);
+        }
+
+        .problem-icon {
+            font-size: 3rem;
+            color: #ef4444;
+            margin-bottom: 1rem;
+        }
+
+        .comparison-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .comparison-side {
+            padding: 2rem;
+            border-radius: 15px;
+        }
+
+        .comparison-before {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border-left: 5px solid #ef4444;
+        }
+
+        .comparison-after {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-left: 5px solid #10b981;
+        }
+
+        .comparison-side h3 {
+            margin-bottom: 1rem;
+        }
+
+        .comparison-before h3 {
+            color: #991b1b;
+        }
+
+        .comparison-after h3 {
+            color: #065f46;
+        }
+
+        /* ========================================
+           DEVOPS SECTION
+           ======================================== */
+        .devops-definition {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .devops-meaning {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+
+        .devops-part {
+            text-align: center;
+            padding: 2rem;
+            background: var(--gradient-blue);
+            color: white;
+            border-radius: 20px;
+            min-width: 200px;
+        }
+
+        .devops-part h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .devops-plus {
+            font-size: 3rem;
+            color: var(--primary-blue);
+            align-self: center;
+        }
+
+        /* DevOps Lifecycle Animation */
+        .devops-lifecycle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+
+        .lifecycle-step {
+            background: var(--gradient-blue);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            min-width: 120px;
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+
+        .lifecycle-step:nth-child(2) { animation-delay: 0.2s; }
+        .lifecycle-step:nth-child(3) { animation-delay: 0.4s; }
+        .lifecycle-step:nth-child(4) { animation-delay: 0.6s; }
+        .lifecycle-step:nth-child(5) { animation-delay: 0.8s; }
+        .lifecycle-step:nth-child(6) { animation-delay: 1s; }
+        .lifecycle-step:nth-child(7) { animation-delay: 1.2s; }
+        .lifecycle-step:nth-child(8) { animation-delay: 1.4s; }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .lifecycle-step i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .lifecycle-arrow {
+            font-size: 2rem;
+            color: var(--primary-blue);
+        }
+
+        /* ========================================
+           BENEFITS SECTION
+           ======================================== */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .benefit-card {
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .benefit-card:hover {
+            background: var(--gradient-blue);
+        }
+
+        .benefit-card:hover .benefit-icon,
+        .benefit-card:hover h3,
+        .benefit-card:hover p {
+            color: white;
+        }
+
+        .benefit-icon {
+            font-size: 3rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .benefit-card h3 {
+            margin-bottom: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .benefit-card p {
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        /* ========================================
+           CLOUD COMPUTING SECTION
+           ======================================== */
+        .cloud-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .cloud-illustration {
+            text-align: center;
+        }
+
+        .cloud-illustration i {
+            font-size: 10rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .advantages-list {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        .advantages-list li {
+            padding: 0.75rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .advantages-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .characteristics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .characteristic-card {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .characteristic-card i {
+            font-size: 2rem;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        /* ========================================
+           CLOUD SERVICE MODELS
+           ======================================== */
+        .service-models {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .service-card {
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+        }
+
+        .iaas-card::before { background: linear-gradient(90deg, #3b82f6, #8b5cf6); }
+        .paas-card::before { background: linear-gradient(90deg, #10b981, #06b6d4); }
+        .saas-card::before { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+
+        .service-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .iaas-card .service-icon { color: #3b82f6; }
+        .paas-card .service-icon { color: #10b981; }
+        .saas-card .service-icon { color: #f59e0b; }
+
+        .service-example {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Comparison Table */
+        .comparison-table-container {
+            overflow-x: auto;
+            margin: 3rem 0;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .comparison-table th {
+            background: var(--gradient-blue);
+            color: white;
+            font-weight: 600;
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .comparison-table .highlight {
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        /* Memory Trick */
+        .memory-trick {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 2rem;
+            border: 3px dashed #f59e0b;
+        }
+
+        .memory-trick h3 {
+            color: #92400e;
+            margin-bottom: 1rem;
+        }
+
+        .memory-trick p {
+            color: #78350f;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        /* ========================================
+           CLOUD IN DEVOPS SECTION
+           ======================================== */
+        .cloud-devops-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .flow-step:hover {
+            transform: translateX(10px);
+        }
+
+        .flow-number {
+            background: var(--gradient-blue);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .flow-content h4 {
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .flow-arrow {
+            text-align: center;
+            font-size: 2rem;
+            color: var(--primary-blue);
+            margin: -0.5rem 0;
+        }
+
+        /* ========================================
+           CLOUD PLATFORMS SECTION
+           ======================================== */
+        .platforms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .platform-card {
+            text-align: center;
+        }
+
+        .platform-logo {
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .platform-logo i {
+            font-size: 5rem;
+        }
+
+        .aws-logo { color: #ff9900; }
+        .azure-logo { color: #0089d6; }
+        .gcp-logo { color: #4285f4; }
+
+        .platform-features {
+            list-style: none;
+            text-align: left;
+            margin-top: 1.5rem;
+        }
+
+        .platform-features li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .platform-features li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--primary-blue);
+            font-weight: bold;
+        }
+
+        /* ========================================
+           PLATFORM COMPARISON TABLE
+           ======================================== */
+        .platform-comparison {
+            margin-top: 3rem;
+        }
+
+        .platform-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .platform-table th,
+        .platform-table td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .platform-table th {
+            background: var(--gradient-blue);
+            color: white;
+            font-weight: 600;
+        }
+
+        .platform-table th:first-child {
+            text-align: left;
+        }
+
+        .platform-table td:first-child {
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .platform-table tr:hover {
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        /* ========================================
+           SUMMARY SECTION
+           ======================================== */
+        .mindmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .mindmap-branch {
+            text-align: center;
+        }
+
+        .mindmap-center {
+            background: var(--gradient-blue);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .mindmap-items {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .mindmap-item {
+            background: var(--white);
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .mindmap-item:hover {
+            transform: scale(1.05);
+            background: var(--gradient-blue);
+            color: white;
+        }
+
+        /* ========================================
+           QUIZ SECTION
+           ======================================== */
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .quiz-question {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .quiz-question h3 {
+            margin-bottom: 1.5rem;
+            color: var(--primary-blue);
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .quiz-option {
+            padding: 1rem 1.5rem;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--off-white);
+        }
+
+        .quiz-option:hover {
+            border-color: var(--primary-blue);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--primary-blue);
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .quiz-option.correct {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .quiz-option.incorrect {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .quiz-score {
+            text-align: center;
+            padding: 2rem;
+            background: var(--gradient-blue);
+            color: white;
+            border-radius: 15px;
+            margin-top: 2rem;
+        }
+
+        .quiz-score h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .quiz-btn {
+            background: var(--gradient-blue);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+        }
+
+        .quiz-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ========================================
+           THANK YOU SECTION
+           ======================================== */
+        .thank-you {
+            text-align: center;
+            padding: 8rem 2rem;
+            background: var(--gradient-blue);
+            color: white;
+        }
+
+        .thank-you h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .thank-you p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .thank-you i {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* ========================================
+           SCROLL ANIMATIONS
+           ======================================== */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ========================================
+           RESPONSIVE DESIGN
+           ======================================== */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero h2 {
+                font-size: 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--white);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1rem;
+                box-shadow: var(--shadow);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .dev-content,
+            .cloud-content,
+            .comparison-box {
+                grid-template-columns: 1fr;
+            }
+
+            .devops-meaning {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .devops-plus {
+                transform: rotate(90deg);
+            }
+
+            .devops-lifecycle {
+                flex-direction: column;
+            }
+
+            .lifecycle-arrow {
+                transform: rotate(90deg);
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .thank-you h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* ========================================
+           FOOTER
+           ======================================== */
+        footer {
+            background: var(--gradient-dark);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        footer p {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="#" class="nav-logo">
+            <i class="fas fa-cloud"></i> DevOps in Cloud
+        </a>
+        <ul class="nav-links">
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#objectives">Objectives</a></li>
+            <li><a href="#devops">DevOps</a></li>
+            <li><a href="#cloud">Cloud</a></li>
+            <li><a href="#platforms">Platforms</a></li>
+            <li><a href="#quiz">Quiz</a></li>
+        </ul>
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+        </button>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-graduation-cap"></i> B.Tech Semester 7
+            </div>
+            <h1>DevOps in Cloud</h1>
+            <h2>Unit 1: Introduction to DevOps and Cloud Computing</h2>
+            <p>Master the fundamentals of modern software development and cloud infrastructure</p>
+            <div class="hero-faculty">
+                <i class="fas fa-chalkboard-teacher"></i> Faculty: Vaishnavi Gupta (VRG)
+            </div>
+            <a href="#objectives" class="cta-btn">
+                Start Learning <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Course Objectives -->
+    <section id="objectives">
+        <h2 class="section-title animate-on-scroll">Course Objectives</h2>
+        <div class="objectives-grid">
+            <div class="glass-card objective-card animate-on-scroll">
+                <div class="objective-icon">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <div>
+                    <h3>Understand DevOps</h3>
+                    <p>Learn the fundamentals of DevOps methodology and its importance in modern software development.</p>
+                </div>
+            </div>
+            <div class="glass-card objective-card animate-on-scroll">
+                <div class="objective-icon">
+                    <i class="fas fa-cloud"></i>
+                </div>
+                <div>
+                    <h3>Explore Cloud Computing</h3>
+                    <p>Gain knowledge about cloud computing concepts, service models, and deployment models.</p>
+                </div>
+            </div>
+            <div class="glass-card objective-card animate-on-scroll">
+                <div class="objective-icon">
+                    <i class="fas fa-server"></i>
+                </div>
+                <div>
+                    <h3>Master Cloud Platforms</h3>
+                    <p>Get introduced to major cloud platforms: AWS, Azure, and Google Cloud Platform.</p>
+                </div>
+            </div>
+            <div class="glass-card objective-card animate-on-scroll">
+                <div class="objective-icon">
+                    <i class="fas fa-link"></i>
+                </div>
+                <div>
+                    <h3>Connect DevOps & Cloud</h3>
+                    <p>Understand how cloud computing enables and enhances DevOps practices.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What is Software Development -->
+    <section id="software-dev">
+        <h2 class="section-title animate-on-scroll">What is Software Development?</h2>
+        <div class="dev-content">
+            <div class="dev-illustration animate-on-scroll">
+                <svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Background Circle -->
+                    <circle cx="150" cy="150" r="140" fill="url(#gradient1)" opacity="0.1"/>
+                    
+                    <!-- Laptop Base -->
+                    <rect x="50" y="200" width="200" height="15" rx="5" fill="#1e293b"/>
+                    
+                    <!-- Laptop Screen -->
+                    <rect x="60" y="80" width="180" height="120" rx="8" fill="#1e293b"/>
+                    <rect x="68" y="88" width="164" height="104" rx="4" fill="#0f172a"/>
+                    
+                    <!-- Code Lines -->
+                    <rect x="80" y="100" width="80" height="6" rx="3" fill="#3b82f6"/>
+                    <rect x="80" y="115" width="120" height="6" rx="3" fill="#60a5fa"/>
+                    <rect x="80" y="130" width="60" height="6" rx="3" fill="#10b981"/>
+                    <rect x="80" y="145" width="100" height="6" rx="3" fill="#f59e0b"/>
+                    <rect x="80" y="160" width="90" height="6" rx="3" fill="#ef4444"/>
+                    <rect x="80" y="175" width="70" height="6" rx="3" fill="#8b5cf6"/>
+                    
+                    <!-- Gear Icon (Development Process) -->
+                    <g transform="translate(220, 60)">
+                        <circle cx="30" cy="30" r="25" fill="none" stroke="#3b82f6" stroke-width="4"/>
+                        <circle cx="30" cy="30" r="12" fill="#3b82f6"/>
+                        <rect x="27" y="0" width="6" height="10" fill="#3b82f6"/>
+                        <rect x="27" y="50" width="6" height="10" fill="#3b82f6"/>
+                        <rect x="0" y="27" width="10" height="6" fill="#3b82f6"/>
+                        <rect x="50" y="27" width="10" height="6" fill="#3b82f6"/>
+                        <rect x="5" y="10" width="8" height="6" fill="#3b82f6" transform="rotate(45 9 13)"/>
+                        <rect x="47" y="44" width="8" height="6" fill="#3b82f6" transform="rotate(45 51 47)"/>
+                        <rect x="5" y="44" width="8" height="6" fill="#3b82f6" transform="rotate(-45 9 47)"/>
+                        <rect x="47" y="10" width="8" height="6" fill="#3b82f6" transform="rotate(-45 51 13)"/>
+                    </g>
+                    
+                    <!-- Floating Elements -->
+                    <circle cx="40" cy="70" r="8" fill="#3b82f6" opacity="0.6">
+                        <animate attributeName="cy" values="70;60;70" dur="3s" repeatCount="indefinite"/>
+                    </circle>
+                    <circle cx="260" cy="180" r="6" fill="#10b981" opacity="0.6">
+                        <animate attributeName="cy" values="180;170;180" dur="2.5s" repeatCount="indefinite"/>
+                    </circle>
+                    <circle cx="30" cy="200" r="5" fill="#f59e0b" opacity="0.6">
+                        <animate attributeName="cy" values="200;190;200" dur="2s" repeatCount="indefinite"/>
+                    </circle>
+                    
+                    <!-- Code Brackets -->
+                    <text x="45" y="55" font-family="monospace" font-size="24" fill="#3b82f6" font-weight="bold">&lt;/&gt;</text>
+                    
+                    <!-- Gradient Definition -->
+                    <defs>
+                        <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <div class="dev-text animate-on-scroll">
+                <div class="glass-card">
+                    <h3>Simple Definition</h3>
+                    <p>Software development is the process of designing, creating, testing, and maintaining computer programs and applications.</p>
+                    <p>It's like building a house - you plan, design, construct, and maintain it!</p>
+                    
+                    <div class="real-life-example">
+                        <h4><i class="fas fa-lightbulb"></i> Real-Life Example</h4>
+                        <p>Think of WhatsApp - developers wrote code to create the app, tested it to make sure messages send correctly, and keep updating it with new features like video calls and payments.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problems in Traditional Software Development -->
+    <section id="problems">
+        <h2 class="section-title animate-on-scroll">Problems in Traditional Software Development</h2>
+        <div class="problems-grid">
+            <div class="glass-card problem-card animate-on-scroll">
+                <i class="fas fa-users-slash problem-icon"></i>
+                <h3>Separated Teams</h3>
+                <p>Developers and Operations work separately, causing communication gaps and misunderstandings.</p>
+            </div>
+            <div class="glass-card problem-card animate-on-scroll">
+                <i class="fas fa-clock problem-icon"></i>
+                <h3>Slow Deployment</h3>
+                <p>Takes weeks or months to release new features because of manual processes and approvals.</p>
+            </div>
+            <div class="glass-card problem-card animate-on-scroll">
+                <i class="fas fa-bug problem-icon"></i>
+                <h3>More Bugs</h3>
+                <p>Errors are discovered late in production, making them expensive and difficult to fix.</p>
+            </div>
+            <div class="glass-card problem-card animate-on-scroll">
+                <i class="fas fa-frown problem-icon"></i>
+                <h3>Unhappy Customers</h3>
+                <p>Users wait longer for features and bug fixes, leading to poor customer satisfaction.</p>
+            </div>
+        </div>
+
+        <div class="comparison-box animate-on-scroll">
+            <div class="comparison-side comparison-before">
+                <h3><i class="fas fa-times-circle"></i> Before DevOps</h3>
+                <ul>
+                    <li>Developers throw code over the wall</li>
+                    <li>Operations team struggles to deploy</li>
+                    <li>Blame game between teams</li>
+                    <li>Slow release cycles (months)</li>
+                    <li>High failure rate</li>
+                </ul>
+            </div>
+            <div class="comparison-side comparison-after">
+                <h3><i class="fas fa-check-circle"></i> After DevOps</h3>
+                <ul>
+                    <li>Teams work together collaboratively</li>
+                    <li>Shared responsibility for success</li>
+                    <li>Fast release cycles (days/weeks)</li>
+                    <li>Automated processes</li>
+                    <li>High quality and reliability</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- What is DevOps -->
+    <section id="devops">
+        <h2 class="section-title animate-on-scroll">What is DevOps?</h2>
+        
+        <div class="devops-definition animate-on-scroll">
+            <div class="glass-card">
+                <h3>Definition</h3>
+                <p>DevOps is a set of practices that combines software development (Dev) and IT operations (Ops) to shorten the development lifecycle and provide continuous delivery with high software quality.</p>
+                <p><strong>In simple words:</strong> Developers and Operations teams work together from start to finish!</p>
+            </div>
+        </div>
+
+        <div class="devops-meaning animate-on-scroll">
+            <div class="devops-part">
+                <h3>Dev</h3>
+                <p>Development - The people who write code and create features</p>
+            </div>
+            <div class="devops-plus">+</div>
+            <div class="devops-part">
+                <h3>Ops</h3>
+                <p>Operations - The people who deploy and maintain systems</p>
+            </div>
+        </div>
+
+        <div class="glass-card animate-on-scroll">
+            <h3 style="text-align: center; margin-bottom: 2rem;">DevOps Lifecycle (Infinite Loop)</h3>
+            <div class="devops-lifecycle">
+                <div class="lifecycle-step">
+                    <i class="fas fa-code"></i>
+                    <p>Plan</p>
+                </div>
+                <div class="lifecycle-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="lifecycle-step">
+                    <i class="fas fa-pencil-alt"></i>
+                    <p>Code</p>
+                </div>
+                <div class="lifecycle-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="lifecycle-step">
+                    <i class="fas fa-vial"></i>
+                    <p>Test</p>
+                </div>
+                <div class="lifecycle-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="lifecycle-step">
+                    <i class="fas fa-rocket"></i>
+                    <p>Release</p>
+                </div>
+                <div class="lifecycle-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="lifecycle-step">
+                    <i class="fas fa-server"></i>
+                    <p>Deploy</p>
+                </div>
+                <div class="lifecycle-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="lifecycle-step">
+                    <i class="fas fa-chart-line"></i>
+                    <p>Monitor</p>
+                </div>
+                <div class="lifecycle-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="lifecycle-step">
+                    <i class="fas fa-sync"></i>
+                    <p>Feedback</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits of DevOps -->
+    <section id="benefits">
+        <h2 class="section-title animate-on-scroll">Benefits of DevOps</h2>
+        <div class="benefits-grid">
+            <div class="glass-card benefit-card animate-on-scroll">
+                <i class="fas fa-tachometer-alt benefit-icon"></i>
+                <h3>Speed</h3>
+                <p>Release features faster and respond to market changes quickly</p>
+            </div>
+            <div class="glass-card benefit-card animate-on-scroll">
+                <i class="fas fa-check-double benefit-icon"></i>
+                <h3>Quality</h3>
+                <p>Continuous testing improves code quality and reduces bugs</p>
+            </div>
+            <div class="glass-card benefit-card animate-on-scroll">
+                <i class="fas fa-handshake benefit-icon"></i>
+                <h3>Collaboration</h3>
+                <p>Teams work together better with shared responsibilities</p>
+            </div>
+            <div class="glass-card benefit-card animate-on-scroll">
+                <i class="fas fa-shield-alt benefit-icon"></i>
+                <h3>Reliability</h3>
+                <p>Automated processes ensure consistent and reliable deployments</p>
+            </div>
+            <div class="glass-card benefit-card animate-on-scroll">
+                <i class="fas fa-chart-bar benefit-icon"></i>
+                <h3>Scalability</h3>
+                <p>Easily scale infrastructure as demand grows</p>
+            </div>
+            <div class="glass-card benefit-card animate-on-scroll">
+                <i class="fas fa-smile benefit-icon"></i>
+                <h3>Customer Satisfaction</h3>
+                <p>Happy customers get features and fixes faster</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cloud Computing -->
+    <section id="cloud">
+        <h2 class="section-title animate-on-scroll">Cloud Computing</h2>
+        <div class="cloud-content">
+            <div class="cloud-illustration animate-on-scroll">
+                <i class="fas fa-cloud"></i>
+            </div>
+            <div class="cloud-text animate-on-scroll">
+                <div class="glass-card">
+                    <h3>Definition</h3>
+                    <p>Cloud computing is the delivery of computing services (servers, storage, databases, networking, software) over the internet ("the cloud").</p>
+                    <p><strong>Simple explanation:</strong> Instead of buying and maintaining your own computers, you rent computing power and storage from companies like Amazon, Microsoft, or Google.</p>
+                    
+                    <div class="real-life-example">
+                        <h4><i class="fas fa-lightbulb"></i> Real-Life Example</h4>
+                        <p>Google Drive - You don't buy a hard drive to store your files. Google stores them on their servers, and you access them from anywhere via the internet!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card animate-on-scroll" style="margin-top: 3rem;">
+            <h3>Advantages of Cloud Computing</h3>
+            <ul class="advantages-list">
+                <li><strong>Cost Effective:</strong> Pay only for what you use (like electricity bill)</li>
+                <li><strong>Scalable:</strong> Increase or decrease resources as needed</li>
+                <li><strong>Accessible:</strong> Access your data from anywhere with internet</li>
+                <li><strong>Reliable:</strong> Cloud providers have backup systems</li>
+                <li><strong>Secure:</strong> Advanced security measures by providers</li>
+                <li><strong>Automatic Updates:</strong> Software updates are handled by providers</li>
+            </ul>
+        </div>
+
+        <h3 style="text-align: center; margin: 3rem 0 2rem;">Key Characteristics</h3>
+        <div class="characteristics-grid">
+            <div class="glass-card characteristic-card animate-on-scroll">
+                <i class="fas fa-bolt"></i>
+                <h4>On-Demand</h4>
+                <p>Resources available when you need them</p>
+            </div>
+            <div class="glass-card characteristic-card animate-on-scroll">
+                <i class="fas fa-expand-arrows-alt"></i>
+                <h4>Scalability</h4>
+                <p>Grow or shrink resources easily</p>
+            </div>
+            <div class="glass-card characteristic-card animate-on-scroll">
+                <i class="fas fa-wifi"></i>
+                <h4>Network Access</h4>
+                <p>Access over the internet from anywhere</p>
+            </div>
+            <div class="glass-card characteristic-card animate-on-scroll">
+                <i class="fas fa-coins"></i>
+                <h4>Pay-As-You-Go</h4>
+                <p>Pay only for what you use</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cloud Service Models -->
+    <section id="service-models">
+        <h2 class="section-title animate-on-scroll">Cloud Service Models</h2>
+        
+        <div class="service-models">
+            <div class="glass-card service-card iaas-card animate-on-scroll">
+                <i class="fas fa-server service-icon"></i>
+                <h3>IaaS</h3>
+                <p><strong>Infrastructure as a Service</strong></p>
+                <p>Rent virtual computers, storage, and networks. You manage everything except the physical hardware.</p>
+                <div class="service-example">
+                    <strong>Example:</strong> Amazon EC2, Google Compute Engine
+                </div>
+                <div class="real-life-example" style="margin-top: 1rem;">
+                    <p><strong>Real Life:</strong> Like renting a fully equipped kitchen - you bring your own ingredients and recipes, but the stove, fridge, and utensils are provided.</p>
+                </div>
+            </div>
+
+            <div class="glass-card service-card paas-card animate-on-scroll">
+                <i class="fas fa-layer-group service-icon"></i>
+                <h3>PaaS</h3>
+                <p><strong>Platform as a Service</strong></p>
+                <p>Get a platform to develop, run, and manage applications without worrying about infrastructure.</p>
+                <div class="service-example">
+                    <strong>Example:</strong> Google App Engine, Heroku
+                </div>
+                <div class="real-life-example" style="margin-top: 1rem;">
+                    <p><strong>Real Life:</strong> Like ordering food at a restaurant - the kitchen, ingredients, and cooking are handled. You just enjoy the meal!</p>
+                </div>
+            </div>
+
+            <div class="glass-card service-card saas-card animate-on-scroll">
+                <i class="fas fa-desktop service-icon"></i>
+                <h3>SaaS</h3>
+                <p><strong>Software as a Service</strong></p>
+                <p>Use software applications over the internet. No installation or maintenance required.</p>
+                <div class="service-example">
+                    <strong>Example:</strong> Gmail, Netflix, Microsoft 365
+                </div>
+                <div class="real-life-example" style="margin-top: 1rem;">
+                    <p><strong>Real Life:</strong> Like watching Netflix - you just stream movies without worrying about how they're stored or delivered.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="comparison-table-container animate-on-scroll">
+            <h3 style="text-align: center; margin-bottom: 1.5rem;">Service Models Comparison</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>IaaS</th>
+                        <th>PaaS</th>
+                        <th>SaaS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>What You Manage</strong></td>
+                        <td>Applications, Data, Runtime, Middleware, OS</td>
+                        <td>Applications, Data</td>
+                        <td>Nothing (just configuration)</td>
+                    </tr>
+                    <tr class="highlight">
+                        <td><strong>What Provider Manages</strong></td>
+                        <td>Virtualization, Servers, Storage, Network</td>
+                        <td>Runtime, Middleware, OS, Virtualization, Servers, Storage, Network</td>
+                        <td>Everything (Applications, Data, Runtime, Middleware, OS, Virtualization, Servers, Storage, Network)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Flexibility</strong></td>
+                        <td>High</td>
+                        <td>Medium</td>
+                        <td>Low</td>
+                    </tr>
+                    <tr class="highlight">
+                        <td><strong>Ease of Use</strong></td>
+                        <td>Low (requires technical knowledge)</td>
+                        <td>Medium</td>
+                        <td>High (ready to use)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Examples</strong></td>
+                        <td>AWS EC2, Azure VM</td>
+                        <td>Google App Engine, Heroku</td>
+                        <td>Gmail, Netflix, Dropbox</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Memory Trick -->
+        <div class="memory-trick animate-on-scroll">
+            <h3><i class="fas fa-brain"></i> Memory Trick</h3>
+            <p>🍕 <strong>Pizza as a Service</strong></p>
+            <p style="font-size: 1rem; font-weight: normal; margin-top: 1rem;">
+                <strong>IaaS:</strong> You buy ingredients and make pizza at home (you do most of the work)<br>
+                <strong>PaaS:</strong> Order pizza delivery (they make it, you just eat)<br>
+                <strong>SaaS:</strong> Eat at a restaurant (they do everything, you just enjoy)
+            </p>
+        </div>
+    </section>
+
+    <!-- Role of Cloud Computing in DevOps -->
+    <section id="cloud-devops">
+        <h2 class="section-title animate-on-scroll">Role of Cloud Computing in DevOps</h2>
+        
+        <div class="glass-card animate-on-scroll" style="margin-bottom: 2rem;">
+            <h3 style="text-align: center;">How Cloud Enables DevOps</h3>
+            <p style="text-align: center;">Cloud computing provides the perfect infrastructure for DevOps practices to flourish.</p>
+        </div>
+
+        <div class="cloud-devops-flow">
+            <div class="flow-step animate-on-scroll">
+                <div class="flow-number">1</div>
+                <div class="flow-content">
+                    <h4>Infrastructure as Code</h4>
+                    <p>Cloud resources can be created and managed through code, making infrastructure consistent and reproducible.</p>
+                </div>
+            </div>
+            
+            <div class="flow-arrow"><i class="fas fa-arrow-down"></i></div>
+            
+            <div class="flow-step animate-on-scroll">
+                <div class="flow-number">2</div>
+                <div class="flow-content">
+                    <h4>On-Demand Resources</h4>
+                    <p>Spin up test environments in minutes and shut them down when done, saving time and money.</p>
+                </div>
+            </div>
+            
+            <div class="flow-arrow"><i class="fas fa-arrow-down"></i></div>
+            
+            <div class="flow-step animate-on-scroll">
+                <div class="flow-number">3</div>
+                <div class="flow-content">
+                    <h4>Auto Scaling</h4>
+                    <p>Automatically increase or decrease resources based on traffic, ensuring optimal performance.</p>
+                </div>
+            </div>
+            
+            <div class="flow-arrow"><i class="fas fa-arrow-down"></i></div>
+            
+            <div class="flow-step animate-on-scroll">
+                <div class="flow-number">4</div>
+                <div class="flow-content">
+                    <h4>Continuous Integration/Deployment</h4>
+                    <p>Cloud platforms provide tools to automate building, testing, and deploying applications.</p>
+                </div>
+            </div>
+            
+            <div class="flow-arrow"><i class="fas fa-arrow-down"></i></div>
+            
+            <div class="flow-step animate-on-scroll">
+                <div class="flow-number">5</div>
+                <div class="flow-content">
+                    <h4>Monitoring & Logging</h4>
+                    <p>Built-in monitoring tools help track application performance and issues in real-time.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card animate-on-scroll" style="margin-top: 2rem;">
+            <h3><i class="fas fa-lightbulb"></i> Real-Life Example</h3>
+            <p><strong>Netflix uses AWS cloud for DevOps:</strong> When millions of people watch Netflix at the same time, AWS automatically adds more servers. When viewership drops, it removes extra servers. This saves money and ensures smooth streaming!</p>
+        </div>
+    </section>
+
+    <!-- Cloud Platforms -->
+    <section id="platforms">
+        <h2 class="section-title animate-on-scroll">Major Cloud Platforms</h2>
+        
+        <div class="platforms-grid">
+            <!-- AWS -->
+            <div class="glass-card platform-card animate-on-scroll">
+                <div class="platform-logo">
+                    <i class="fab fa-aws aws-logo"></i>
+                </div>
+                <h3>Amazon Web Services (AWS)</h3>
+                <p>The market leader in cloud computing with the most comprehensive service offerings.</p>
+                <ul class="platform-features">
+                    <li>Largest market share (~32%)</li>
+                    <li>200+ services available</li>
+                    <li>Global infrastructure</li>
+                    <li>Strong community and documentation</li>
+                    <li>Pay-as-you-go pricing</li>
+                </ul>
+                <div class="service-example" style="margin-top: 1rem;">
+                    <strong>Famous Users:</strong> Netflix, Airbnb, NASA
+                </div>
+            </div>
+
+            <!-- Azure -->
+            <div class="glass-card platform-card animate-on-scroll">
+                <div class="platform-logo">
+                    <i class="fab fa-microsoft azure-logo"></i>
+                </div>
+                <h3>Microsoft Azure</h3>
+                <p>Microsoft's cloud platform, popular among enterprises using Microsoft technologies.</p>
+                <ul class="platform-features">
+                    <li>Second largest market share (~23%)</li>
+                    <li>Excellent Windows integration</li>
+                    <li>Strong hybrid cloud support</li>
+                    <li>Enterprise-focused features</li>
+                    <li>Good for .NET applications</li>
+                </ul>
+                <div class="service-example" style="margin-top: 1rem;">
+                    <strong>Famous Users:</strong> Samsung, BMW, Coca-Cola
+                </div>
+            </div>
+
+            <!-- GCP -->
+            <div class="glass-card platform-card animate-on-scroll">
+                <div class="platform-logo">
+                    <i class="fab fa-google gcp-logo"></i>
+                </div>
+                <h3>Google Cloud Platform (GCP)</h3>
+                <p>Google's cloud platform, known for data analytics and machine learning capabilities.</p>
+                <ul class="platform-features">
+                    <li>Third largest market share (~10%)</li>
+                    <li>Best for AI/ML and Big Data</li>
+                    <li>Kubernetes origin (Google created it)</li>
+                    <li>Strong data analytics tools</li>
+                    <li>Competitive pricing</li>
+                </ul>
+                <div class="service-example" style="margin-top: 1rem;">
+                    <strong>Famous Users:</strong> Spotify, Twitter, Snapchat
+                </div>
+            </div>
+        </div>
+
+        <!-- Platform Comparison Table -->
+        <div class="platform-comparison animate-on-scroll">
+            <h3 style="text-align: center; margin-bottom: 1.5rem;">AWS vs Azure vs GCP Comparison</h3>
+            <div class="comparison-table-container">
+                <table class="platform-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>AWS</th>
+                            <th>Azure</th>
+                            <th>GCP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Market Share</td>
+                            <td>32% (Leader)</td>
+                            <td>23% (Second)</td>
+                            <td>10% (Third)</td>
+                        </tr>
+                        <tr class="highlight">
+                            <td>Services Available</td>
+                            <td>200+</td>
+                            <td>100+</td>
+                            <td>60+</td>
+                        </tr>
+                        <tr>
+                            <td>Best For</td>
+                            <td>General purpose, startups</td>
+                            <td>Enterprise, Windows</td>
+                            <td>AI/ML, Big Data</td>
+                        </tr>
+                        <tr class="highlight">
+                            <td>Learning Curve</td>
+                            <td>Medium</td>
+                            <td>Medium</td>
+                            <td>Easy</td>
+                        </tr>
+                        <tr>
+                            <td>Pricing</td>
+                            <td>Complex but flexible</td>
+                            <td>Enterprise discounts</td>
+                            <td>Simpler, sustained use discounts</td>
+                        </tr>
+                        <tr class="highlight">
+                            <td>Free Tier</td>
+                            <td>12 months free</td>
+                            <td>12 months free + $200 credit</td>
+                            <td>$300 credit for 90 days</td>
+                        </tr>
+                        <tr>
+                            <td>Strength</td>
+                            <td>Mature ecosystem</td>
+                            <td>Hybrid cloud</td>
+                            <td>Data & AI</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Summary -->
+    <section id="summary">
+        <h2 class="section-title animate-on-scroll">Summary Mind Map</h2>
+        <div class="mindmap">
+            <div class="mindmap-branch animate-on-scroll">
+                <div class="mindmap-center">
+                    <i class="fas fa-cogs"></i> DevOps
+                </div>
+                <div class="mindmap-items">
+                    <div class="mindmap-item">
+                        <i class="fas fa-check"></i> Dev + Ops collaboration
+                    </div>
+                    <div class="mindmap-item">
+                        <i class="fas fa-check"></i> Faster deployment
+                    </div>
+                    <div class="mindmap-item">
+                        <i class="fas fa-check"></i> Better quality
+                    </div>
+                    <div class="mindmap-item">
+                        <i class="fas fa-check"></i> Continuous improvement
+                    </div>
+                </div>
+            </div>
+
+            <div class="mindmap-branch animate-on-scroll">
+                <div class="mindmap-center">
+                    <i class="fas fa-cloud"></i> Cloud Computing
+                </div>
+                <div class="mindmap-items">
+                    <div class="mindmap-item">
+                        <i class="fas fa-server"></i> IaaS - Infrastructure
+                    </div>
+                    <div class="mindmap-item">
+                        <i class="fas fa-layer-group"></i> PaaS - Platform
+                    </div>
+                    <div class="mindmap-item">
+                        <i class="fas fa-desktop"></i> SaaS - Software
+                    </div>
+                    <div class="mindmap-item">
+                        <i class="fas fa-coins"></i> Pay-as-you-go
+                    </div>
+                </div>
+            </div>
+
+            <div class="mindmap-branch animate-on-scroll">
+                <div class="mindmap-center">
+                    <i class="fas fa-globe"></i> Cloud Platforms
+                </div>
+                <div class="mindmap-items">
+                    <div class="mindmap-item">
+                        <i class="fab fa-aws"></i> AWS - Market leader
+                    </div>
+                    <div class="mindmap-item">
+                        <i class="fab fa-microsoft"></i> Azure - Enterprise
+                    </div>
+                    <div class="mindmap-item">
+                        <i class="fab fa-google"></i> GCP - AI/ML focus
+                    </div>
+                    <div class="mindmap-item">
+                        <i class="fas fa-link"></i> Enables DevOps
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quiz Section -->
+    <section id="quiz">
+        <h2 class="section-title animate-on-scroll">Test Your Knowledge</h2>
+        <div class="quiz-container">
+            <div id="quiz-questions">
+                <!-- Questions will be loaded by JavaScript -->
+            </div>
+            <div style="text-align: center;">
+                <button class="quiz-btn" onclick="calculateScore()">Submit Quiz</button>
+            </div>
+            <div id="quiz-result" class="quiz-score" style="display: none;">
+                <h2 id="score-display">0/10</h2>
+                <p id="score-message"></p>
+                <button class="quiz-btn" onclick="resetQuiz()" style="background: white; color: var(--primary-blue);">Try Again</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Thank You -->
+    <section class="thank-you">
+        <i class="fas fa-graduation-cap"></i>
+        <h1>Thank You!</h1>
+        <p>Keep learning and exploring DevOps & Cloud Computing</p>
+        <p style="font-size: 1rem; margin-top: 1rem;">Questions? Feel free to ask!</p>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>DevOps in Cloud - Unit 1 | B.Tech Semester 7</p>
+        <p>&copy; 2026 Educational Presentation</p>
+        <p>Made by Vaishnavi Gupta</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // ========================================
+        // THEME TOGGLE FUNCTIONALITY
+        // ========================================
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.querySelector('.theme-toggle');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+            document.querySelector('.theme-toggle').innerHTML = '<i class="fas fa-sun"></i>';
+        }
+
+        // ========================================
+        // MOBILE MENU
+        // ========================================
+        function toggleMobileMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
+
+        // ========================================
+        // STICKY NAVBAR
+        // ========================================
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // ========================================
+        // SCROLL ANIMATIONS
+        // ========================================
+        function handleScrollAnimation() {
+            const elements = document.querySelectorAll('.animate-on-scroll');
+            
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementTop < windowHeight - 100) {
+                    element.classList.add('animated');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', handleScrollAnimation);
+        window.addEventListener('load', handleScrollAnimation);
+
+        // ========================================
+        // QUIZ FUNCTIONALITY
+        // ========================================
+        const quizQuestions = [
+            {
+                question: "What does DevOps stand for?",
+                options: ["Development + Operations", "Data + Operations", "Digital + Operations", "Design + Operations"],
+                correct: 0
+            },
+            {
+                question: "Which is NOT a benefit of DevOps?",
+                options: ["Faster deployment", "Better collaboration", "More bugs", "Higher quality"],
+                correct: 2
+            },
+            {
+                question: "What is IaaS?",
+                options: ["Infrastructure as a Service", "Internet as a Service", "Integration as a Service", "Information as a Service"],
+                correct: 0
+            },
+            {
+                question: "Gmail is an example of which cloud service model?",
+                options: ["IaaS", "PaaS", "SaaS", "DaaS"],
+                correct: 2
+            },
+            {
+                question: "Which cloud platform has the largest market share?",
+                options: ["Microsoft Azure", "Google Cloud Platform", "Amazon Web Services", "IBM Cloud"],
+                correct: 2
+            },
+            {
+                question: "What is a key characteristic of cloud computing?",
+                options: ["Fixed resources", "Pay-as-you-go", "On-premise only", "Manual scaling"],
+                correct: 1
+            },
+            {
+                question: "Which cloud platform is best for AI/ML?",
+                options: ["AWS", "Azure", "GCP", "All are equal"],
+                correct: 2
+            },
+            {
+                question: "In DevOps, what does the 'Ops' stand for?",
+                options: ["Options", "Operations", "Optimization", "Organization"],
+                correct: 1
+            },
+            {
+                question: "What does PaaS provide?",
+                options: ["Raw infrastructure", "Development platform", "Ready-to-use software", "Database only"],
+                correct: 1
+            },
+            {
+                question: "Cloud computing enables DevOps by providing:",
+                options: ["Manual processes", "On-demand resources", "Fixed infrastructure", "Slower deployment"],
+                correct: 1
+            }
+        ];
+
+        function loadQuiz() {
+            const quizContainer = document.getElementById('quiz-questions');
+            quizContainer.innerHTML = '';
+            
+            quizQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'quiz-question animate-on-scroll';
+                questionDiv.innerHTML = `
+                    <h3>Q${index + 1}. ${q.question}</h3>
+                    <div class="quiz-options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="quiz-option" onclick="selectOption(${index}, ${optIndex})" data-question="${index}" data-option="${optIndex}">
+                                ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                quizContainer.appendChild(questionDiv);
+            });
+            
+            // Trigger animation
+            setTimeout(handleScrollAnimation, 100);
+        }
+
+        function selectOption(questionIndex, optionIndex) {
+            const options = document.querySelectorAll(`[data-question="${questionIndex}"]`);
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[optionIndex].classList.add('selected');
+        }
+
+        function calculateScore() {
+            let score = 0;
+            const totalQuestions = quizQuestions.length;
+            
+            quizQuestions.forEach((q, index) => {
+                const selectedOption = document.querySelector(`[data-question="${index}"].selected`);
+                if (selectedOption) {
+                    const optionIndex = parseInt(selectedOption.dataset.option);
+                    if (optionIndex === q.correct) {
+                        score++;
+                        selectedOption.classList.add('correct');
+                    } else {
+                        selectedOption.classList.add('incorrect');
+                        // Show correct answer
+                        document.querySelector(`[data-question="${index}"][data-option="${q.correct}"]`).classList.add('correct');
+                    }
+                }
+            });
+            
+            const resultDiv = document.getElementById('quiz-result');
+            const scoreDisplay = document.getElementById('score-display');
+            const scoreMessage = document.getElementById('score-message');
+            
+            resultDiv.style.display = 'block';
+            scoreDisplay.textContent = `${score}/${totalQuestions}`;
+            
+            if (score === totalQuestions) {
+                scoreMessage.textContent = '🎉 Perfect! You\'re a DevOps expert!';
+            } else if (score >= 7) {
+                scoreMessage.textContent = '👍 Great job! You have a good understanding!';
+            } else if (score >= 5) {
+                scoreMessage.textContent = '📚 Good effort! Review the material and try again.';
+            } else {
+                scoreMessage.textContent = '💪 Keep learning! Review the content and retake the quiz.';
+            }
+            
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetQuiz() {
+            document.getElementById('quiz-result').style.display = 'none';
+            loadQuiz();
+            document.getElementById('quiz').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Load quiz on page load
+        document.addEventListener('DOMContentLoaded', loadQuiz);
+
+        // ========================================
+        // SMOOTH SCROLL FOR NAV LINKS
+        // ========================================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                    // Close mobile menu if open
+                    document.querySelector('.nav-links').classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
